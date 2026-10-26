@@ -1,4 +1,4 @@
-# 🛒 Sistema POS - Tienda de Víveres Pro
+#  Sistema POS - Tienda de Víveres Pro
 
 Sistema web integral de **Punto de Venta (POS), Control de Inventarios Multi-Ubicación, Compras, Gestión de Caja y Seguridad**, diseñado específicamente para tiendas de víveres, minimercados y supermercados independientes.
 
@@ -6,7 +6,7 @@ Construido siguiendo una arquitectura modular limpia, base de datos relacional n
 
 ---
 
-## 🛠️ Stack Tecnológico
+##  Stack Tecnológico
 
 - **Frontend:** HTML5 semántico, CSS3 Vanilla avanzado (sistema de diseño oscuro profesional tipo SaaS, animaciones y diseño responsivo), JavaScript ES6+ modular (SPA reactiva sin dependencias pesadas).
 - **Backend:** Node.js con Express 5.
@@ -15,7 +15,7 @@ Construido siguiendo una arquitectura modular limpia, base de datos relacional n
 
 ---
 
-## 🏛️ Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```text
 Pos/
@@ -52,7 +52,7 @@ Pos/
 
 ---
 
-## 📊 Estructura del Modelo Relacional
+## Estructura del Modelo Relacional
 
 La base de datos implementa las tablas requeridas por el documento técnico:
 
@@ -73,7 +73,7 @@ La base de datos implementa las tablas requeridas por el documento técnico:
 
 ---
 
-## ⚙️ Reglas de Negocio Implementadas (Procedimientos Almacenados)
+##  Reglas de Negocio Implementadas (Procedimientos Almacenados)
 
 Todas las operaciones críticas se ejecutan dentro de transacciones atómicas (`BEGIN TRANSACTION ... COMMIT / ROLLBACK`):
 
@@ -115,7 +115,7 @@ Todas las operaciones críticas se ejecutan dentro de transacciones atómicas (`
 
 ---
 
-## 🚀 Instrucciones de Instalación y Ejecución Local
+##  Instrucciones de Instalación y Ejecución Local
 
 ### Prerrequisitos
 - **Node.js** v18 o superior (probado en v24.15 LTS).
@@ -141,7 +141,7 @@ Todas las operaciones críticas se ejecutan dentro de transacciones atómicas (`
 
 ---
 
-## 🔐 Portal de Autenticación y Control de Acceso por Roles (RBAC)
+##  Portal de Autenticación y Control de Acceso por Roles (RBAC)
 
 El acceso al sistema está estrictamente protegido por autenticación obligatoria. Nadie puede ingresar sin digitar un usuario y contraseña válidos:
 
@@ -151,7 +151,7 @@ El acceso al sistema está estrictamente protegido por autenticación obligatori
 | **`cajero`** | `cajero123` | **CAJERO** | **Exclusivamente su puesto de trabajo:** Facturación rápida en Punto de Venta (POS) y Turnos/Arqueos de Caja (`POS_ABRIR_CAJA` y `POS_CERRAR_CAJA`). Los módulos de inventarios, compras, catálogo, proveedores y seguridad están **completamente ocultos y bloqueados**. |
 | **`bodeguero`** | `bodega123` | **BODEGUERO** | **Exclusivamente logística y almacén:** Existencias en Bodega y Tienda, Traslados de mercancía (`POS_CONFIRMAR_TRANSFERENCIA`), Recepción de Compras a Proveedor (`POS_CONFIRMAR_COMPRA`) y Catálogo de Productos. Las funciones de facturación en POS, cobro, arqueo de dinero y seguridad están **completamente ocultas y bloqueadas**. |
 
-> 🔒 **Seguridad y Auditoría:** Si se ingresan credenciales erróneas, el sistema deniega el acceso y alerta al usuario. Al ingresar, el menú lateral se adapta dinámicamente y la barra superior muestra el nombre y rol del empleado conectado junto al botón **"Salir"** para cerrar sesión en cualquier momento.
+> **Seguridad y Auditoría:** Si se ingresan credenciales erróneas, el sistema deniega el acceso y alerta al usuario. Al ingresar, el menú lateral se adapta dinámicamente y la barra superior muestra el nombre y rol del empleado conectado junto al botón **"Salir"** para cerrar sesión en cualquier momento.
 
 ---
 
