@@ -1,0 +1,283 @@
+-- ====================================================================
+-- SISTEMA POS - TIENDA DE VÍVERES
+-- MODELO RELACIONAL DE BASE DE DATOS (SQLITE)
+-- ====================================================================
+
+PRAGMA foreign_keys = ON;
+
+-- 1. SEGURIDAD Y ROLES
+CREATE TABLE IF NOT EXISTS POS_ROLES (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS POS_PERMISOS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    modulo TEXT NOT NULL,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS POS_ROL_PERMISOS (
+    rol_id INTEGER NOT NULL,
+    permiso_id INTEGER NOT NULL,
+    PRIMARY KEY (rol_id, permiso_id),
+    FOREIGN KEY (rol_id) REFERENCES POS_ROLES(id) ON DELETE CASCADE,
+    FOREIGN KEY (permiso_id) REFERENCES POS_PERMISOS(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS POS_EMPLEADOS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    usuario TEXT UNIQUE,
+    cedula TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    apellido TEXT NOT NULL,
+    telefono TEXT,
+    email TEXT,
+    rol_id INTEGER NOT NULL,
+    pin TEXT NOT NULL DEFAULT '1234',
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (rol_id) REFERENCES POS_ROLES(id)
+);
+
+-- 2. CATÁLOGOS BASE
+CREATE TABLE IF NOT EXISTS POS_CATEGORIAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT,
+    icono TEXT DEFAULT 'box',
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO'
+);
+
+CREATE TABLE IF NOT EXISTS POS_UNIDADES (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    abreviatura TEXT NOT NULL,
+    permite_decimales INTEGER DEFAULT 0
+);
+
+-- 3. PRODUCTOS
+CREATE TABLE IF NOT EXISTS POS_PRODUCTOS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo_barras TEXT UNIQUE NOT NULL,
+    sku TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    descripcion TEXT,
+    categoria_id INTEGER NOT NULL,
+    unidad_id INTEGER NOT NULL,
+    precio_venta REAL NOT NULL CHECK(precio_venta >= 0),
+    costo_compra REAL NOT NULL CHECK(costo_compra >= 0),
+    stock_minimo REAL DEFAULT 5 CHECK(stock_minimo >= 0),
+    iva_porcentaje REAL DEFAULT 0 CHECK(iva_porcentaje >= 0),
+    imagen_url TEXT,
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (categoria_id) REFERENCES POS_CATEGORIAS(id),
+    FOREIGN KEY (unidad_id) REFERENCES POS_UNIDADES(id)
+);
+
+-- 4. UBICACIONES Y EXISTENCIAS (BODEGA VS TIENDA)
+CREATE TABLE IF NOT EXISTS POS_UBICACIONES (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    tipo TEXT CHECK(tipo IN ('BODEGA', 'TIENDA', 'OTRO')) NOT NULL,
+    descripcion TEXT,
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO'
+);
+
+CREATE TABLE IF NOT EXISTS POS_EXISTENCIAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    producto_id INTEGER NOT NULL,
+    ubicacion_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL DEFAULT 0 CHECK(cantidad >= 0),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(producto_id, ubicacion_id),
+    FOREIGN KEY (producto_id) REFERENCES POS_PRODUCTOS(id) ON DELETE CASCADE,
+    FOREIGN KEY (ubicacion_id) REFERENCES POS_UBICACIONES(id)
+);
+
+-- 5. PROVEEDORES
+CREATE TABLE IF NOT EXISTS POS_PROVEEDORES (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nit TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    contacto TEXT,
+    telefono TEXT,
+    email TEXT,
+    direccion TEXT,
+    ciudad TEXT DEFAULT 'Bogotá',
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 6. COMPRAS Y ABASTECIMIENTO
+CREATE TABLE IF NOT EXISTS POS_COMPRAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero_factura TEXT UNIQUE NOT NULL,
+    proveedor_id INTEGER NOT NULL,
+    empleado_id INTEGER NOT NULL,
+    bodega_destino_id INTEGER NOT NULL,
+    fecha_emision DATETIME DEFAULT CURRENT_TIMESTAMP,
+    estado TEXT CHECK(estado IN ('BORRADOR', 'CONFIRMADA', 'ANULADA')) DEFAULT 'BORRADOR',
+    subtotal REAL DEFAULT 0,
+    iva REAL DEFAULT 0,
+    total REAL DEFAULT 0,
+    observaciones TEXT,
+    fecha_confirmacion DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (proveedor_id) REFERENCES POS_PROVEEDORES(id),
+    FOREIGN KEY (empleado_id) REFERENCES POS_EMPLEADOS(id),
+    FOREIGN KEY (bodega_destino_id) REFERENCES POS_UBICACIONES(id)
+);
+
+CREATE TABLE IF NOT EXISTS POS_COMPRA_DET (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    compra_id INTEGER NOT NULL,
+    producto_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL CHECK(cantidad > 0),
+    costo_unitario REAL NOT NULL CHECK(costo_unitario >= 0),
+    subtotal REAL NOT NULL,
+    FOREIGN KEY (compra_id) REFERENCES POS_COMPRAS(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES POS_PRODUCTOS(id)
+);
+
+-- 7. TRASLADOS Y TRANSFERENCIAS INTERNAS
+CREATE TABLE IF NOT EXISTS POS_TRANSFERENCIAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo_transferencia TEXT UNIQUE NOT NULL,
+    ubicacion_origen_id INTEGER NOT NULL,
+    ubicacion_destino_id INTEGER NOT NULL,
+    empleado_id INTEGER NOT NULL,
+    estado TEXT CHECK(estado IN ('BORRADOR', 'CONFIRMADA', 'ANULADA')) DEFAULT 'BORRADOR',
+    observaciones TEXT,
+    fecha_confirmacion DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ubicacion_origen_id) REFERENCES POS_UBICACIONES(id),
+    FOREIGN KEY (ubicacion_destino_id) REFERENCES POS_UBICACIONES(id),
+    FOREIGN KEY (empleado_id) REFERENCES POS_EMPLEADOS(id)
+);
+
+CREATE TABLE IF NOT EXISTS POS_TRANSFERENCIA_DET (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transferencia_id INTEGER NOT NULL,
+    producto_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL CHECK(cantidad > 0),
+    FOREIGN KEY (transferencia_id) REFERENCES POS_TRANSFERENCIAS(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES POS_PRODUCTOS(id)
+);
+
+-- 8. CAJA Y TURNOS
+CREATE TABLE IF NOT EXISTS POS_CAJAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo TEXT UNIQUE NOT NULL,
+    nombre TEXT NOT NULL,
+    ubicacion_id INTEGER NOT NULL,
+    estado TEXT CHECK(estado IN ('ACTIVO', 'INACTIVO')) DEFAULT 'ACTIVO',
+    FOREIGN KEY (ubicacion_id) REFERENCES POS_UBICACIONES(id)
+);
+
+CREATE TABLE IF NOT EXISTS POS_CAJA_SESIONES (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    caja_id INTEGER NOT NULL,
+    empleado_id INTEGER NOT NULL,
+    monto_apertura REAL NOT NULL DEFAULT 0 CHECK(monto_apertura >= 0),
+    monto_ventas_efectivo REAL DEFAULT 0,
+    monto_ventas_otros REAL DEFAULT 0,
+    monto_cierre_esperado REAL DEFAULT 0,
+    monto_cierre_real REAL DEFAULT 0,
+    diferencia REAL DEFAULT 0,
+    estado TEXT CHECK(estado IN ('ABIERTA', 'CERRADA')) DEFAULT 'ABIERTA',
+    fecha_apertura DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_cierre DATETIME,
+    observaciones TEXT,
+    FOREIGN KEY (caja_id) REFERENCES POS_CAJAS(id),
+    FOREIGN KEY (empleado_id) REFERENCES POS_EMPLEADOS(id)
+);
+
+-- 9. VENTAS Y FACTURACIÓN
+CREATE TABLE IF NOT EXISTS POS_VENTAS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    codigo_factura TEXT UNIQUE NOT NULL,
+    caja_sesion_id INTEGER NOT NULL,
+    empleado_id INTEGER NOT NULL,
+    ubicacion_id INTEGER NOT NULL,
+    cliente_nombre TEXT DEFAULT 'Consumidor Final',
+    cliente_doc TEXT DEFAULT '222222222222',
+    metodo_pago TEXT NOT NULL DEFAULT 'EFECTIVO',
+    subtotal REAL NOT NULL DEFAULT 0,
+    iva REAL NOT NULL DEFAULT 0,
+    total REAL NOT NULL DEFAULT 0,
+    monto_recibido REAL DEFAULT 0,
+    cambio REAL DEFAULT 0,
+    estado TEXT CHECK(estado IN ('COMPLETADA', 'ANULADA')) DEFAULT 'COMPLETADA',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (caja_sesion_id) REFERENCES POS_CAJA_SESIONES(id),
+    FOREIGN KEY (empleado_id) REFERENCES POS_EMPLEADOS(id),
+    FOREIGN KEY (ubicacion_id) REFERENCES POS_UBICACIONES(id)
+);
+
+CREATE TABLE IF NOT EXISTS POS_VENTA_DET (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    venta_id INTEGER NOT NULL,
+    producto_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL CHECK(cantidad > 0),
+    precio_unitario REAL NOT NULL CHECK(precio_unitario >= 0),
+    costo_unitario REAL NOT NULL DEFAULT 0,
+    subtotal REAL NOT NULL,
+    FOREIGN KEY (venta_id) REFERENCES POS_VENTAS(id) ON DELETE CASCADE,
+    FOREIGN KEY (producto_id) REFERENCES POS_PRODUCTOS(id)
+);
+
+CREATE TABLE IF NOT EXISTS POS_PAGOS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    venta_id INTEGER NOT NULL,
+    metodo_pago TEXT NOT NULL,
+    monto REAL NOT NULL,
+    referencia TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (venta_id) REFERENCES POS_VENTAS(id) ON DELETE CASCADE
+);
+
+-- 10. BITÁCORA Y AUDITORÍA DE MOVIMIENTOS DE INVENTARIO
+CREATE TABLE IF NOT EXISTS POS_MOVIMIENTOS (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tipo_movimiento TEXT NOT NULL CHECK(tipo_movimiento IN (
+        'ENTRADA_COMPRA',
+        'SALIDA_VENTA',
+        'TRANSFERENCIA_SALIDA',
+        'TRANSFERENCIA_ENTRADA',
+        'AJUSTE_POSITIVO',
+        'AJUSTE_NEGATIVO'
+    )),
+    producto_id INTEGER NOT NULL,
+    ubicacion_id INTEGER NOT NULL,
+    cantidad REAL NOT NULL,
+    saldo_anterior REAL NOT NULL,
+    saldo_nuevo REAL NOT NULL,
+    referencia_tipo TEXT,
+    referencia_id INTEGER,
+    empleado_id INTEGER,
+    motivo TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (producto_id) REFERENCES POS_PRODUCTOS(id),
+    FOREIGN KEY (ubicacion_id) REFERENCES POS_UBICACIONES(id),
+    FOREIGN KEY (empleado_id) REFERENCES POS_EMPLEADOS(id)
+);
+
+-- ÍNDICES PARA ALTO RENDIMIENTO
+CREATE INDEX IF NOT EXISTS idx_prod_barcode ON POS_PRODUCTOS(codigo_barras);
+CREATE INDEX IF NOT EXISTS idx_prod_cat ON POS_PRODUCTOS(categoria_id);
+CREATE INDEX IF NOT EXISTS idx_exist_prod_ubic ON POS_EXISTENCIAS(producto_id, ubicacion_id);
+CREATE INDEX IF NOT EXISTS idx_ventas_fecha ON POS_VENTAS(created_at);
+CREATE INDEX IF NOT EXISTS idx_ventas_sesion ON POS_VENTAS(caja_sesion_id);
+CREATE INDEX IF NOT EXISTS idx_mov_prod ON POS_MOVIMIENTOS(producto_id);
+CREATE INDEX IF NOT EXISTS idx_mov_fecha ON POS_MOVIMIENTOS(created_at);

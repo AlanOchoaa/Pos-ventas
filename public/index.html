@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS Víveres Pro | Sistema Punto de Venta e Inventarios</title>
+    <meta name="description" content="Sistema Integral de Punto de Venta, Control de Inventarios Multi-Ubicación, Compras, Caja y Facturación para Tienda de Víveres.">
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/pos.css">
+</head>
+<body class="theme-dark">
+    <!-- PANTALLA DE INICIO DE SESIÓN SEGURA -->
+    <div class="login-overlay" id="loginScreen">
+        <div class="login-card-secure">
+            <div class="login-brand">
+                <div class="login-logo-icon">
+                    <img src="img/logo.jpg" alt="VíveresPOS Logo" class="brand-logo-img">
+                </div>
+                <div>
+                    <h2 class="login-brand-title">VÍVERES<span>POS</span></h2>
+                    <span class="login-brand-subtitle">Sistema de Punto de Venta</span>
+                </div>
+            </div>
+
+            <!-- CAJA DE ERROR DE AUTENTICACIÓN -->
+            <div class="login-error-alert" id="loginErrorBox" style="display: none;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="loginErrorMsg">Credenciales inválidas.</span>
+            </div>
+
+            <form id="formManualLogin" onsubmit="event.preventDefault(); authModule.submitLogin();">
+                <div class="form-group">
+                    <label class="form-label" for="loginUser">Usuario:</label>
+                    <div class="login-input-wrap">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="loginUser" class="form-input" placeholder="Ingresa tu usuario" required autocomplete="username" autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Contraseña:</label>
+                    <div class="login-input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                        <button type="button" class="btn-toggle-pwd" id="btnTogglePassword" title="Mostrar/Ocultar" onclick="authModule.togglePasswordVisibility()">
+                            <i class="fa-solid fa-eye" id="iconEye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block-login" id="btnLoginSubmit">
+                    <i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- WRAPPER PRINCIPAL (Oculto hasta autenticación exitosa) -->
+    <div class="app-layout" id="appLayout" style="display: none;">
+        
+        <!-- SIDEBAR DE NAVEGACIÓN -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <div class="logo-icon">
+                        <img src="img/logo.jpg" alt="Logo" class="brand-logo-img">
+                    </div>
+                    <div class="brand-info">
+                        <h1 class="brand-title">VÍVERES<span>POS</span></h1>
+                        <span class="brand-subtitle">Tienda & Almacén</span>
+                    </div>
+                </div>
+                <button class="btn-toggle-sidebar" id="btnToggleSidebar" aria-label="Colapsar menú">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+            </div>
+
+            <!-- PERFIL DE USUARIO ACTIVO Y ROL ACTUAL -->
+            <div class="sidebar-user-card" id="sidebarUserBox">
+                <div class="user-card-top">
+                    <div class="user-avatar" id="userAvatar">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="currentUserName">Carlos Mendoza</span>
+                        <span class="user-role-badge" id="currentUserRole">ADMINISTRADOR</span>
+                    </div>
+                </div>
+                <div class="user-role-hint" id="currentUserHint">
+                    <i class="fa-solid fa-circle-check"></i> Acceso total al sistema
+                </div>
+            </div>
+
+            <!-- MENÚ DE NAVEGACIÓN FILTRADO POR ROL -->
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- SECCIÓN OPERACIÓN: ADMIN Y CAJERO -->
+                <div class="nav-section-wrapper" data-section="operacion" data-roles="ADMIN,CAJERO">
+                    <div class="nav-section-label">OPERACIÓN DIARIA</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-module="pos" data-roles="ADMIN,CAJERO">
+                            <a href="#pos" class="nav-link" data-module="pos" id="navPos">
+                                <span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span>
+                                <span class="nav-text">Punto de Venta (POS)</span>
+                                <span class="nav-badge pulse" id="posCashStatusBadge">Caja</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-module="dashboard" data-roles="ADMIN">
+                            <a href="#dashboard" class="nav-link" data-module="dashboard" id="navDashboard">
+                                <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
+                                <span class="nav-text">Dashboard General</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-module="cash" data-roles="ADMIN,CAJERO">
+                            <a href="#cash" class="nav-link" data-module="cash" id="navCash">
+                                <span class="nav-icon"><i class="fa-solid fa-vault"></i></span>
+                                <span class="nav-text">Turnos y Caja</span>
+                                <span class="nav-pill-status" id="cashPillStatus">--</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SECCIÓN LOGÍSTICA: ADMIN Y BODEGUERO -->
+                <div class="nav-section-wrapper" data-section="logistica" data-roles="ADMIN,BODEGUERO">
+                    <div class="nav-section-label">LOGÍSTICA & CATÁLOGO</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-module="inventory" data-roles="ADMIN,BODEGUERO">
+                            <a href="#inventory" class="nav-link" data-module="inventory" id="navInventory">
+                                <span class="nav-icon"><i class="fa-solid fa-warehouse"></i></span>
+                                <span class="nav-text">Inventarios & Traslados</span>
+                                <span class="nav-alert-count" id="inventoryAlertCount" style="display:none;">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-module="purchases" data-roles="ADMIN,BODEGUERO">
+                            <a href="#purchases" class="nav-link" data-module="purchases" id="navPurchases">
+                                <span class="nav-icon"><i class="fa-solid fa-cart-flatbed"></i></span>
+                                <span class="nav-text">Compras a Proveedor</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-module="products" data-roles="ADMIN,BODEGUERO">
+                            <a href="#products" class="nav-link" data-module="products" id="navProducts">
+                                <span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                                <span class="nav-text">Productos y Stock</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" data-module="suppliers" data-roles="ADMIN">
+                            <a href="#suppliers" class="nav-link" data-module="suppliers" id="navSuppliers">
+                                <span class="nav-icon"><i class="fa-solid fa-truck-field"></i></span>
+                                <span class="nav-text">Proveedores</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SECCIÓN SISTEMA: SOLO ADMIN -->
+                <div class="nav-section-wrapper" data-section="sistema" data-roles="ADMIN">
+                    <div class="nav-section-label">SISTEMA & CONTROL</div>
+                    <ul class="nav-list">
+                        <li class="nav-item" data-module="employees" data-roles="ADMIN">
+                            <a href="#employees" class="nav-link" data-module="employees" id="navEmployees">
+                                <span class="nav-icon"><i class="fa-solid fa-users-gear"></i></span>
+                                <span class="nav-text">Seguridad & Empleados</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- FOOTER SIDEBAR -->
+            <div class="sidebar-footer">
+                <div class="app-status">
+                    <span class="status-dot online"></span>
+                    <span class="status-label" id="footerRoleLabel">Modo Activo</span>
+                </div>
+                <button class="btn-logout-sidebar" onclick="authModule.logout()" title="Cerrar Sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content" id="mainContent">
+            
+            <!-- TOPBAR HEADER -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Abrir Menú">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="page-title-box">
+                        <h2 class="page-title" id="pageTitle">Punto de Venta (POS)</h2>
+                        <span class="page-subtitle" id="pageSubtitle">Facturación ágil de mostrador y cobro de víveres</span>
+                    </div>
+                </div>
+
+                <div class="topbar-center">
+                    <!-- INDICADOR EN TIEMPO REAL DE UBICACIÓN Y SESIÓN DE CAJA -->
+                    <div class="quick-status-chip" id="topbarCashChip">
+                        <i class="fa-solid fa-circle-dot"></i>
+                        <span id="topbarCashText">Verificando estado de caja...</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- PERFIL ACTIVO Y BOTÓN CERRAR SESIÓN -->
+                    <div class="topbar-user-pill" id="topbarUserPill">
+                        <span class="topbar-role-badge" id="topbarRoleBadge">ADMIN</span>
+                        <span class="topbar-user-name" id="topbarUserName">Carlos Mendoza</span>
+                    </div>
+
+                    <button class="btn btn-sm btn-logout-topbar" onclick="authModule.logout()" title="Cerrar Sesión">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Salir
+                    </button>
+
+                    <button class="btn btn-icon-glass" id="btnOpenDrawerOrCash" title="Apertura / Cierre Rápido de Caja">
+                        <i class="fa-solid fa-cash-register"></i>
+                    </button>
+                    <button class="btn btn-icon-glass" id="btnRefreshModule" title="Actualizar Datos">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                    <div class="clock-display" id="clockDisplay">--:--:--</div>
+                </div>
+            </header>
+
+            <!-- CONTENEDOR DINÁMICO DE MÓDULOS (SPA) -->
+            <div class="module-view-container" id="moduleContainer">
+                
+                <!-- 1. MÓDULO: PUNTO DE VENTA (POS) -->
+                <section class="module-view active" id="view-pos">
+                    <div class="pos-layout">
+                        <!-- PANEL IZQUIERDO: CATÁLOGO Y BUSCADOR -->
+                        <div class="pos-products-panel">
+                            <!-- BARRA DE BÚSQUEDA Y LECTOR DE CÓDIGO -->
+                            <div class="pos-search-bar">
+                                <div class="pos-input-group">
+                                    <span class="search-icon"><i class="fa-solid fa-barcode"></i></span>
+                                    <input type="text" id="posBarcodeSearch" class="pos-search-input" placeholder="Escanear código de barras o escribir nombre del producto (F2)..." autocomplete="off" autofocus>
+                                    <button class="btn-clear-search" id="btnClearPosSearch" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                                <div class="pos-location-badge">
+                                    <i class="fa-solid fa-shop"></i>
+                                    <span>Piso de Venta (Tienda)</span>
+                                </div>
+                            </div>
+
+                            <!-- PESTAÑAS DE CATEGORÍAS -->
+                            <div class="pos-categories-nav" id="posCategoriesTabs">
+                                <button class="pos-cat-tab active" data-cat="all">
+                                    <i class="fa-solid fa-border-all"></i> Todos
+                                </button>
+                                <!-- Se llena dinámicamente -->
+                            </div>
+
+                            <!-- GRILLA DE PRODUCTOS TIPO TARJETAS -->
+                            <div class="pos-grid" id="posProductsGrid">
+                                <div class="pos-loading-state">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> Cargando productos...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PANEL DERECHO: CARRITO Y COBRO -->
+                        <div class="pos-cart-panel">
+                            <div class="cart-header">
+                                <div class="cart-title-wrap">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <h3>Carrito de Venta</h3>
+                                </div>
+                                <button class="btn-cart-clear" id="btnClearCart" title="Vaciar Carrito">
+                                    <i class="fa-regular fa-trash-can"></i> Limpiar
+                                </button>
+                            </div>
+
+                            <!-- SELECCIÓN DE CLIENTE -->
+                            <div class="cart-customer-selector">
+                                <div class="customer-info-box">
+                                    <i class="fa-solid fa-user-tag"></i>
+                                    <input type="text" id="posCustomerName" class="customer-input" value="Consumidor Final" placeholder="Nombre de cliente">
+                                    <input type="text" id="posCustomerDoc" class="customer-doc-input" value="222222222222" placeholder="Cédula/NIT">
+                                </div>
+                            </div>
+
+                            <!-- LISTA DE ÍTEMS EN EL CARRITO -->
+                            <div class="cart-items-list" id="posCartItemsList">
+                                <div class="cart-empty-state">
+                                    <i class="fa-solid fa-basket-shopping"></i>
+                                    <p>El carrito está vacío</p>
+                                    <small>Selecciona o escanea productos para agregar</small>
+                                </div>
+                            </div>
+
+                            <!-- RESUMEN DE TOTALES Y BOTÓN DE COBRO -->
+                            <div class="cart-footer">
+                                <div class="cart-summary-lines">
+                                    <div class="summary-line">
+                                        <span>Subtotal:</span>
+                                        <strong id="cartSubtotalText">$0</strong>
+                                    </div>
+                                    <div class="summary-line">
+                                        <span>IVA (0% víveres):</span>
+                                        <span id="cartIvaText">$0</span>
+                                    </div>
+                                    <div class="summary-line total-highlight">
+                                        <span>TOTAL A PAGAR:</span>
+                                        <strong id="cartTotalText">$0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="cart-actions-grid">
+                                    <button class="btn btn-primary btn-checkout" id="btnOpenCheckoutModal" disabled>
+                                        <i class="fa-solid fa-money-bill-wave"></i> COBRAR (F9)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. MÓDULO: DASHBOARD -->
+                <section class="module-view" id="view-dashboard">
+                    <!-- KPI CARDS -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card card-glow-emerald">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Ventas Hoy (Efectivo & Más)</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-cash-register"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiVentasHoy">$0</div>
+                            <div class="kpi-footer">
+                                <span class="badge badge-success" id="kpiTransaccionesHoy">0 transacciones</span>
+                                <span class="kpi-desc">Corte en tiempo real</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-blue">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Productos en Catálogo</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-barcode"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiProductosActivos">0</div>
+                            <div class="kpi-footer">
+                                <span class="badge badge-info">Activos</span>
+                                <span class="kpi-desc" id="kpiTotalUnidades">0 unidades físicas</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-amber">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Alertas de Stock Bajo</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiAlertasStock">0</div>
+                            <div class="kpi-footer">
+                                <span class="badge badge-warning" id="kpiAlertasPill">En Piso de Venta</span>
+                                <span class="kpi-desc">Requieren traslado</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-purple">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Valorización de Inventario</span>
+                                <div class="kpi-icon"><i class="fa-solid fa-vault"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpiValorInventario">$0</div>
+                            <div class="kpi-footer">
+                                <span class="badge badge-purple">Costo Compra</span>
+                                <span class="kpi-desc">Bodega + Tienda</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICOS Y ALERTAS -->
+                    <div class="dashboard-grid-content">
+                        <!-- GRÁFICO 7 DÍAS -->
+                        <div class="dashboard-card card-chart">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> Ventas de los Últimos 7 Días</h3>
+                                    <span class="card-subtitle">Evolución de ingresos y facturación diaria</span>
+                                </div>
+                                <span class="chart-badge">Suma Diaria</span>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="chartVentas7Dias" width="700" height="260"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- PANEL DE ALERTAS DE STOCK BAJO CON BOTÓN RÁPIDO -->
+                        <div class="dashboard-card card-alerts">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title"><i class="fa-solid fa-bell"></i> Alertas en Tienda (Piso de Venta)</h3>
+                                    <span class="card-subtitle">Artículos agotándose en mostrador</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline" id="btnQuickTransferAll" title="Crear traslado desde Bodega">
+                                    <i class="fa-solid fa-dolly"></i> Trasladar
+                                </button>
+                            </div>
+                            <div class="alerts-list-wrap" id="dashboardAlertsList">
+                                <div class="empty-state-small">Cargando alertas...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BITÁCORA RECIENTE DE AUDITORÍA -->
+                    <div class="dashboard-card card-movements">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Bitácora de Auditoría Reciente (POS_MOVIMIENTOS)</h3>
+                                <span class="card-subtitle">Historial de entradas por compra, traslados y salidas por venta</span>
+                            </div>
+                            <a href="#inventory" class="btn btn-sm btn-glass" data-module="inventory">Ver Bitácora Completa</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha & Hora</th>
+                                        <th>Tipo Movimiento</th>
+                                        <th>Producto</th>
+                                        <th>Ubicación</th>
+                                        <th>Cantidad</th>
+                                        <th>Saldo Ant. &rarr; Nuevo</th>
+                                        <th>Responsable</th>
+                                        <th>Motivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboardMovementsTable">
+                                    <tr><td colspan="8" class="text-center">Cargando movimientos...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. MÓDULO: PRODUCTOS Y CATÁLOGOS -->
+                <section class="module-view" id="view-products">
+                    <div class="module-header">
+                        <div class="header-filters">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="productsFilterSearch" placeholder="Buscar por nombre, SKU o código de barras...">
+                            </div>
+                            <select id="productsFilterCategory" class="custom-select">
+                                <option value="">Todas las Categorías</option>
+                            </select>
+                            <select id="productsFilterStock" class="custom-select">
+                                <option value="">Todos los Estados</option>
+                                <option value="BAJO">Stock Bajo en Tienda</option>
+                                <option value="AGOTADO">Agotados</option>
+                            </select>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="btnNewProduct">
+                                <i class="fa-solid fa-plus"></i> Nuevo Producto
+                            </button>
+                            <button class="btn btn-glass" id="btnManageCategories">
+                                <i class="fa-solid fa-tags"></i> Categorías
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="data-table" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:52px">Foto</th>
+                                        <th>Código / SKU</th>
+                                        <th>Artículo</th>
+                                        <th>Categoría</th>
+                                        <th>Precio Venta</th>
+                                        <th>Costo Compra</th>
+                                        <th>Stock Bodega</th>
+                                        <th>Stock Tienda</th>
+                                        <th>Stock Total</th>
+                                        <th>Estado Tienda</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <tr><td colspan="11" class="text-center">Cargando catálogo...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. MÓDULO: INVENTARIOS Y TRANSFERENCIAS -->
+                <section class="module-view" id="view-inventory">
+                    <div class="module-subnav">
+                        <button class="subnav-btn active" data-tab="tab-stock-multilocation">
+                            <i class="fa-solid fa-layer-group"></i> Existencias Multi-Ubicación
+                        </button>
+                        <button class="subnav-btn" data-tab="tab-transfers">
+                            <i class="fa-solid fa-truck-ramp-box"></i> Traslados (Bodega &rarr; Tienda)
+                        </button>
+                        <button class="subnav-btn" data-tab="tab-movements-log">
+                            <i class="fa-solid fa-timeline"></i> Bitácora de Auditoría (POS_MOVIMIENTOS)
+                        </button>
+                    </div>
+
+                    <!-- TAB 1: STOCK MULTI-UBICACIÓN -->
+                    <div class="subview active" id="tab-stock-multilocation">
+                        <div class="inventory-summary-cards">
+                            <div class="inv-kpi">
+                                <span>Valor en Bodega (Costo)</span>
+                                <strong id="invValorBodega">$0</strong>
+                            </div>
+                            <div class="inv-kpi">
+                                <span>Valor en Tienda (Costo)</span>
+                                <strong id="invValorTienda">$0</strong>
+                            </div>
+                            <div class="inv-kpi">
+                                <span>Valor Global en Almacén</span>
+                                <strong id="invValorGlobal">$0</strong>
+                            </div>
+                            <button class="btn btn-primary" id="btnCreateTransferFromStock">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i> Nuevo Traslado de Mercancía
+                            </button>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-responsive">
+                                <table class="data-table" id="inventoryStockTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Código / SKU</th>
+                                            <th>Artículo</th>
+                                            <th>Unidad</th>
+                                            <th>Bodega Principal</th>
+                                            <th>Tienda Principal</th>
+                                            <th>Mínimo Tienda</th>
+                                            <th>Alerta Estado</th>
+                                            <th>Acción Rápida</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inventoryStockTableBody">
+                                        <tr><td colspan="8" class="text-center">Cargando inventarios...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: TRASLADOS INTERNOS -->
+                    <div class="subview" id="tab-transfers">
+                        <div class="module-header">
+                            <div>
+                                <h3 class="section-title">Órdenes de Transferencia Interna</h3>
+                                <p class="section-subtitle">Movimiento controlado de existencias de Bodega a Tienda con confirmación transaccional.</p>
+                            </div>
+                            <button class="btn btn-primary" id="btnNewTransfer">
+                                <i class="fa-solid fa-plus"></i> Registrar Traslado
+                            </button>
+                        </div>
+                        <div class="table-card">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código Traslado</th>
+                                            <th>Origen</th>
+                                            <th>Destino</th>
+                                            <th>Ítems / Unidades</th>
+                                            <th>Responsable</th>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transfersTableBody">
+                                        <tr><td colspan="8" class="text-center">Cargando transferencias...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: BITÁCORA AUDITORÍA -->
+                    <div class="subview" id="tab-movements-log">
+                        <div class="module-header">
+                            <div class="header-filters">
+                                <select id="movementsFilterType" class="custom-select">
+                                    <option value="">Todos los Tipos de Movimiento</option>
+                                    <option value="ENTRADA_COMPRA">Entrada por Compra</option>
+                                    <option value="SALIDA_VENTA">Salida por Venta</option>
+                                    <option value="TRANSFERENCIA_SALIDA">Traslado Salida (Origen)</option>
+                                    <option value="TRANSFERENCIA_ENTRADA">Traslado Entrada (Destino)</option>
+                                    <option value="AJUSTE_POSITIVO">Ajuste Positivo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-card">
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Fecha & Hora</th>
+                                            <th>Tipo</th>
+                                            <th>Producto</th>
+                                            <th>Ubicación</th>
+                                            <th>Cantidad</th>
+                                            <th>Saldo Anterior</th>
+                                            <th>Saldo Nuevo</th>
+                                            <th>Motivo / Referencia</th>
+                                            <th>Usuario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="movementsLogTableBody">
+                                        <tr><td colspan="10" class="text-center">Cargando bitácora...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. MÓDULO: COMPRAS A PROVEEDOR -->
+                <section class="module-view" id="view-purchases">
+                    <div class="module-header">
+                        <div class="header-filters">
+                            <select id="purchasesFilterStatus" class="custom-select">
+                                <option value="">Todos los Estados</option>
+                                <option value="BORRADOR">Borradores (Por Confirmar)</option>
+                                <option value="CONFIRMADA">Confirmadas (En Bodega)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="btnNewPurchase">
+                            <i class="fa-solid fa-plus"></i> Nueva Orden de Compra
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Factura Compra</th>
+                                        <th>Proveedor</th>
+                                        <th>Destino</th>
+                                        <th>Fecha Emisión</th>
+                                        <th>Total Factura</th>
+                                        <th>Ítems</th>
+                                        <th>Estado</th>
+                                        <th>Acciones / Confirmación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchasesTableBody">
+                                    <tr><td colspan="8" class="text-center">Cargando compras...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. MÓDULO: PROVEEDORES -->
+                <section class="module-view" id="view-suppliers">
+                    <div class="module-header">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="suppliersFilterSearch" placeholder="Buscar por NIT, nombre o contacto...">
+                        </div>
+                        <button class="btn btn-primary" id="btnNewSupplier">
+                            <i class="fa-solid fa-plus"></i> Registrar Proveedor
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>NIT / Documento</th>
+                                        <th>Razón Social / Proveedor</th>
+                                        <th>Contacto</th>
+                                        <th>Teléfono</th>
+                                        <th>Correo</th>
+                                        <th>Ciudad / Dirección</th>
+                                        <th>Compras</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliersTableBody">
+                                    <tr><td colspan="9" class="text-center">Cargando proveedores...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. MÓDULO: TURNOS Y CAJA -->
+                <section class="module-view" id="view-cash">
+                    <div class="cash-session-active-card" id="cashActiveCard">
+                        <!-- Se llena dinámicamente con el turno actual -->
+                    </div>
+
+                    <div class="module-header" style="margin-top: 1.5rem;">
+                        <div>
+                            <h3 class="section-title">Historial de Turnos y Arqueos de Caja</h3>
+                            <p class="section-subtitle">Consolidado de ventas en efectivo vs otros medios, fondos iniciales y diferencias.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sesión #</th>
+                                        <th>Caja</th>
+                                        <th>Cajero</th>
+                                        <th>Apertura</th>
+                                        <th>Cierre</th>
+                                        <th>Monto Inicial</th>
+                                        <th>Ventas Efectivo</th>
+                                        <th>Esperado en Caja</th>
+                                        <th>Real Contado</th>
+                                        <th>Diferencia</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cashSessionsTableBody">
+                                    <tr><td colspan="12" class="text-center">Cargando historial de turnos...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. MÓDULO: SEGURIDAD Y EMPLEADOS -->
+                <section class="module-view" id="view-employees">
+                    <div class="module-header">
+                        <div>
+                            <h3 class="section-title">Personal Autorizado & Roles Transaccionales</h3>
+                            <p class="section-subtitle">Gestión de empleados con roles y permisos específicos para operaciones del POS e inventarios.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btnNewEmployee">
+                            <i class="fa-solid fa-user-plus"></i> Registrar Empleado
+                        </button>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Cédula</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Teléfono / Email</th>
+                                        <th>Rol en Sistema</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeesTableBody">
+                                    <tr><td colspan="7" class="text-center">Cargando empleados...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MATRIZ DE PERMISOS POR ROL -->
+                    <div class="roles-matrix-card">
+                        <h4 class="matrix-title"><i class="fa-solid fa-shield-halved"></i> Matriz de Permisos por Rol</h4>
+                        <div class="roles-grid" id="rolesMatrixContainer">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- CONTENEDOR DE MODALES -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Título Modal</h3>
+                <button class="btn-close-modal" id="btnCloseModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido dinámico inyectado -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE TOASTS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- SCRIPTS MODULARES -->
+    <script src="js/api.js"></script>
+    <script src="js/components/toast.js"></script>
+    <script src="js/components/modal.js"></script>
+    <script src="js/modules/dashboard.js"></script>
+    <script src="js/modules/pos.js"></script>
+    <script src="js/modules/products.js"></script>
+    <script src="js/modules/inventory.js"></script>
+    <script src="js/modules/purchases.js"></script>
+    <script src="js/modules/suppliers.js"></script>
+    <script src="js/modules/cash.js"></script>
+    <script src="js/modules/employees.js"></script>
+    <script src="js/modules/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
