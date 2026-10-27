@@ -134,14 +134,14 @@ function routeTo(moduleName, forceReload = false) {
 
 function updateHeaderTitles(moduleName) {
     const titles = {
-        'pos': { title: 'Punto de Venta (POS)', subtitle: 'Facturación ágil de mostrador y cobro de víveres' },
-        'dashboard': { title: 'Dashboard General', subtitle: 'Métricas de negocio en tiempo real y ventas de los últimos 7 días' },
-        'cash': { title: 'Control de Turnos y Caja', subtitle: 'Aperturas de fondo, ventas en efectivo y arqueos de cierre' },
-        'products': { title: 'Productos y Catálogo', subtitle: 'Artículos, precios, costos, categorías y control de inventario' },
-        'inventory': { title: 'Inventarios y Transferencias', subtitle: 'Control multi-ubicación (Bodega vs Tienda) y bitácora de auditoría' },
-        'purchases': { title: 'Compras y Abastecimiento', subtitle: 'Órdenes de compra a proveedores autorizados e ingreso a Bodega' },
-        'suppliers': { title: 'Gestión de Proveedores', subtitle: 'Directorio comercial de proveedores de víveres y suministros' },
-        'employees': { title: 'Seguridad y Empleados', subtitle: 'Personal de la tienda, roles y matriz de permisos transaccionales' }
+        'pos': { title: 'Punto de Venta', subtitle: 'Facturación y cobro' },
+        'dashboard': { title: 'Dashboard', subtitle: 'Resumen general' },
+        'cash': { title: 'Turnos y Caja', subtitle: 'Control de caja' },
+        'products': { title: 'Productos', subtitle: 'Catálogo de artículos' },
+        'inventory': { title: 'Inventarios', subtitle: 'Bodega y Tienda' },
+        'purchases': { title: 'Compras', subtitle: 'Recepción a proveedores' },
+        'suppliers': { title: 'Proveedores', subtitle: 'Directorio comercial' },
+        'employees': { title: 'Empleados', subtitle: 'Usuarios y roles' }
     };
 
     const info = titles[moduleName] || titles['pos'];

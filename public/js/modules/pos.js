@@ -194,6 +194,14 @@ const posModule = {
             return;
         }
 
+        const catEmojis = {
+            'Granos y Abarrotes': '🌾', 'Lácteos y Huevos': '🥛',
+            'Enlatados y Conservas': '🥫', 'Bebidas': '🥤',
+            'Panadería y Snacks': '🍞', 'Aseo del Hogar': '🧴',
+            'Abarrotes y Enlatados': '🥫', 'Aseo y Limpieza': '🧴',
+            'Bebidas y Refrescos': '🥤', 'Granos y Despensa': '🌾'
+        };
+
         grid.innerHTML = filtered.map(p => {
             const stock = p.stock_tienda || 0;
             const isAgotado = stock <= 0;
@@ -206,14 +214,28 @@ const posModule = {
                 badgeHtml = `<span class="prod-stock-badge stock-low">${stock} ${p.unidad_abrev} (Bajo)</span>`;
             }
 
+            const fallbackEmoji = catEmojis[p.categoria_nombre] || '📦';
+            const imgSrc = p.imagen_url
+                ? (p.imagen_url.startsWith('http://') || p.imagen_url.startsWith('https://') ? p.imagen_url : `img/${p.imagen_url}`)
+                : null;
+
             return `
                 <div class="pos-prod-card ${isAgotado ? 'agotado' : ''}" onclick="posModule.addToCart(${p.id})">
-                    ${badgeHtml}
-                    <span class="prod-category-tag">${p.categoria_nombre}</span>
-                    <h4 class="prod-title">${p.nombre}</h4>
-                    <div class="prod-footer">
-                        <span class="prod-price">${formatCurrency(p.precio_venta)}</span>
-                        <span class="prod-unit">${p.unidad_nombre}</span>
+                    <div class="pos-prod-img-wrap">
+                        ${badgeHtml}
+                        ${imgSrc
+                            ? `<img src="${imgSrc}" alt="${p.nombre}" class="pos-prod-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                               <div class="pos-prod-img-fallback" style="display:none;">${fallbackEmoji}</div>`
+                            : `<div class="pos-prod-img-fallback">${fallbackEmoji}</div>`
+                        }
+                    </div>
+                    <div class="pos-prod-info">
+                        <span class="prod-category-tag">${p.categoria_nombre}</span>
+                        <h4 class="prod-title">${p.nombre}</h4>
+                        <div class="prod-footer">
+                            <span class="prod-price">${formatCurrency(p.precio_venta)}</span>
+                            <span class="prod-unit">${p.unidad_abrev || p.unidad_nombre}</span>
+                        </div>
                     </div>
                 </div>
             `;

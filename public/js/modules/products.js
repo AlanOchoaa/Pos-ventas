@@ -118,10 +118,11 @@ const productsModule = {
                 'Enlatados y Conservas': '🥫', 'Bebidas': '🥤',
                 'Panadería y Snacks': '🍞', 'Aseo del Hogar': '🧴'
             };
-            const fallbackEmoji = catEmojis[p.categoria_nombre] || '📦';
-            const imgSrc = p.imagen_url ? `img/${p.imagen_url}` : null;
+            const imgSrc = p.imagen_url
+                ? (p.imagen_url.startsWith('http://') || p.imagen_url.startsWith('https://') ? p.imagen_url : `img/${p.imagen_url}`)
+                : null;
             const thumbnail = imgSrc
-                ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                    <div class="prod-thumb-fallback" style="display:none;">${fallbackEmoji}</div>`
                 : `<div class="prod-thumb-fallback">${fallbackEmoji}</div>`;
 
@@ -219,6 +220,12 @@ const productsModule = {
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">URL de la Foto / Imagen (Internet):</label>
+                        <input type="url" id="prodImageUrl" class="form-input" placeholder="https://images.unsplash.com/...">
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Pega la URL de una imagen real de internet para este producto.</small>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-glass" onclick="modal.close();">Cancelar</button>
                         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar Producto</button>
@@ -239,6 +246,7 @@ const productsModule = {
                 precio_venta: Number(document.getElementById('prodPrice').value),
                 costo_compra: Number(document.getElementById('prodCost').value || 0),
                 stock_minimo: Number(document.getElementById('prodMinStock').value || 5),
+                imagen_url: document.getElementById('prodImageUrl').value.trim() || null,
                 stock_inicial_bodega: Number(document.getElementById('prodInitBodega').value || 0)
             };
 
@@ -311,6 +319,12 @@ const productsModule = {
                         <input type="number" id="editMinStock" class="form-input" value="${prod.stock_minimo}" min="0">
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">URL de la Foto / Imagen (Internet):</label>
+                        <input type="url" id="editImageUrl" class="form-input" value="${prod.imagen_url || ''}" placeholder="https://images.unsplash.com/...">
+                        <small style="color: var(--text-muted); font-size: 0.72rem;">Pega la URL de una foto real de internet para este producto.</small>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-glass" onclick="modal.close();">Cancelar</button>
                         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Guardar Cambios</button>
@@ -330,7 +344,8 @@ const productsModule = {
                 unidad_id: Number(document.getElementById('editUnit').value),
                 precio_venta: Number(document.getElementById('editPrice').value),
                 costo_compra: Number(document.getElementById('editCost').value),
-                stock_minimo: Number(document.getElementById('editMinStock').value)
+                stock_minimo: Number(document.getElementById('editMinStock').value),
+                imagen_url: document.getElementById('editImageUrl').value.trim() || null
             };
 
             const res = await api.put(`/products/${id}`, body);

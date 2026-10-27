@@ -85,38 +85,38 @@ INSERT OR IGNORE INTO POS_PROVEEDORES (id, nit, nombre, contacto, telefono, emai
 
 -- 9. PRODUCTOS
 INSERT OR IGNORE INTO POS_PRODUCTOS (id, codigo_barras, sku, nombre, descripcion, categoria_id, unidad_id, precio_venta, costo_compra, stock_minimo, iva_porcentaje, imagen_url, estado) VALUES
-(1, '7702001001', 'GRN-ARR-01', 'Arroz Diana Tradicional 1000g', 'Arroz blanco seleccionado tipo exportación 1kg', 1, 1, 4500, 3400, 10, 0, 'arroz.png', 'ACTIVO'),
-(2, '7702001002', 'GRN-ACE-01', 'Aceite Premier Girasol 1000ml', 'Aceite vegetal refinado de girasol 1 litro', 1, 1, 12500, 9800, 8, 0, 'aceite.png', 'ACTIVO'),
-(3, '7702001003', 'GRN-AZU-01', 'Azúcar Manuelita Blanca 1000g', 'Azúcar refinada natural en empaque de 1kg', 1, 1, 4200, 3100, 10, 0, 'azucar.png', 'ACTIVO'),
-(4, '7702001004', 'GRN-FRI-01', 'Fríjol Bola Roja 500g', 'Fríjol seleccionado de cosecha nacional 500g', 1, 1, 5800, 4200, 8, 0, 'frijol.png', 'ACTIVO'),
-(5, '7702001005', 'GRN-LEN-01', 'Lenteja Seleccionada 500g', 'Lenteja tierna de rápida cocción 500g', 1, 1, 4300, 3100, 8, 0, 'lenteja.png', 'ACTIVO'),
-(6, '7702001006', 'GRN-PAS-01', 'Espagueti Doria Clásico 500g', 'Pasta tradicional fortificada con vitaminas 500g', 1, 1, 3900, 2800, 12, 0, 'espagueti.png', 'ACTIVO'),
-(7, '7702001007', 'GRN-HAR-01', 'Harina P.A.N. Blanca 1000g', 'Harina de maíz blanco precocida original 1kg', 1, 1, 4600, 3500, 10, 0, 'harina_pan.png', 'ACTIVO'),
+(1, '7702001001', 'GRN-ARR-01', 'Arroz Diana Tradicional 1000g', 'Arroz blanco seleccionado tipo exportación 1kg', 1, 1, 4500, 3400, 10, 0, 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(2, '7702001002', 'GRN-ACE-01', 'Aceite Premier Girasol 1000ml', 'Aceite vegetal refinado de girasol 1 litro', 1, 1, 12500, 9800, 8, 0, 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(3, '7702001003', 'GRN-AZU-01', 'Azúcar Manuelita Blanca 1000g', 'Azúcar refinada natural en empaque de 1kg', 1, 1, 4200, 3100, 10, 0, 'https://images.unsplash.com/photo-1581441363689-1f3c3c414635?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(4, '7702001004', 'GRN-FRI-01', 'Fríjol Bola Roja 500g', 'Fríjol seleccionado de cosecha nacional 500g', 1, 1, 5800, 4200, 8, 0, 'https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(5, '7702001005', 'GRN-LEN-01', 'Lenteja Seleccionada 500g', 'Lenteja tierna de rápida cocción 500g', 1, 1, 4300, 3100, 8, 0, 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(6, '7702001006', 'GRN-PAS-01', 'Espagueti Doria Clásico 500g', 'Pasta tradicional fortificada con vitaminas 500g', 1, 1, 3900, 2800, 12, 0, 'https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(7, '7702001007', 'GRN-HAR-01', 'Harina P.A.N. Blanca 1000g', 'Harina de maíz blanco precocida original 1kg', 1, 1, 4600, 3500, 10, 0, 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(8, '7702001008', 'LAC-LEC-01', 'Leche Entera Alquería 1.1L', 'Leche ultra pasteurizada larga vida en bolsa', 2, 1, 4800, 3700, 15, 0, 'leche.png', 'ACTIVO'),
-(9, '7702001009', 'LAC-HUE-01', 'Cubeta Huevos AA x 30 Unds', 'Huevos rojos frescos tipo AA bandeja 30 unidades', 2, 1, 18000, 14500, 6, 0, 'huevos.png', 'ACTIVO'),
-(10, '7702001010', 'LAC-QUE-01', 'Queso Campesino Fresco 500g', 'Queso blanco semiblando artesanal 500g', 2, 1, 9500, 7200, 5, 0, 'queso.png', 'ACTIVO'),
-(11, '7702001011', 'LAC-MAN-01', 'Mantequilla Colanta con Sal 250g', 'Mantequilla pasteurizada de pura crema de leche', 2, 1, 6500, 4900, 8, 0, 'mantequilla.png', 'ACTIVO'),
+(8, '7702001008', 'LAC-LEC-01', 'Leche Entera Alquería 1.1L', 'Leche ultra pasteurizada larga vida en bolsa', 2, 1, 4800, 3700, 15, 0, 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(9, '7702001009', 'LAC-HUE-01', 'Cubeta Huevos AA x 30 Unds', 'Huevos rojos frescos tipo AA bandeja 30 unidades', 2, 1, 18000, 14500, 6, 0, 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(10, '7702001010', 'LAC-QUE-01', 'Queso Campesino Fresco 500g', 'Queso blanco semiblando artesanal 500g', 2, 1, 9500, 7200, 5, 0, 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(11, '7702001011', 'LAC-MAN-01', 'Mantequilla Colanta con Sal 250g', 'Mantequilla pasteurizada de pura crema de leche', 2, 1, 6500, 4900, 8, 0, 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(12, '7702001012', 'ENL-ATU-01', 'Atún Van Camp''s en Aceite 160g', 'Lomitos de atún claro en aceite de girasol', 3, 6, 7200, 5400, 12, 0, 'atun.png', 'ACTIVO'),
-(13, '7702001013', 'ENL-SAR-01', 'Sardinas en Tomate Vikingo 425g', 'Sardinas seleccionadas en salsa de tomate', 3, 6, 6800, 5000, 10, 0, 'sardina.png', 'ACTIVO'),
-(14, '7702001014', 'ENL-SAL-01', 'Sal Refisal Marina 1000g', 'Sal yodada y fluorada de alta pureza 1kg', 3, 1, 2000, 1400, 15, 0, 'sal.png', 'ACTIVO'),
+(12, '7702001012', 'ENL-ATU-01', 'Atún Van Camp''s en Aceite 160g', 'Lomitos de atún claro en aceite de girasol', 3, 6, 7200, 5400, 12, 0, 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(13, '7702001013', 'ENL-SAR-01', 'Sardinas en Tomate Vikingo 425g', 'Sardinas seleccionadas en salsa de tomate', 3, 6, 6800, 5000, 10, 0, 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(14, '7702001014', 'ENL-SAL-01', 'Sal Refisal Marina 1000g', 'Sal yodada y fluorada de alta pureza 1kg', 3, 1, 2000, 1400, 15, 0, 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(15, '7702001015', 'BEB-CAF-01', 'Café Sello Rojo Molido 500g', 'Café excelso suave colombiano tueste medio', 4, 1, 14900, 11500, 8, 0, 'cafe.png', 'ACTIVO'),
-(16, '7702001016', 'BEB-CHO-01', 'Chocolate Corona Tradicional 500g', 'Pastillas de chocolate de mesa con azúcar', 4, 1, 8600, 6500, 8, 0, 'chocolate.png', 'ACTIVO'),
-(17, '7702001017', 'BEB-COC-01', 'Coca-Cola Original 1.5L', 'Gaseosa refrescante botella no retornable', 4, 1, 6000, 4500, 10, 0, 'cocacola.png', 'ACTIVO'),
-(18, '7702001018', 'BEB-AGU-01', 'Agua Manantial Cristal 600ml', 'Agua pura de manantial sin gas', 4, 1, 2000, 1200, 20, 0, 'agua.png', 'ACTIVO'),
-(19, '7702001019', 'BEB-HIT-01', 'Jugo Hit Mora 500ml', 'Bebida con jugo natural de fruta en botella PET', 4, 1, 3000, 2200, 15, 0, 'jugo_hit.png', 'ACTIVO'),
+(15, '7702001015', 'BEB-CAF-01', 'Café Sello Rojo Molido 500g', 'Café excelso suave colombiano tueste medio', 4, 1, 14900, 11500, 8, 0, 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(16, '7702001016', 'BEB-CHO-01', 'Chocolate Corona Tradicional 500g', 'Pastillas de chocolate de mesa con azúcar', 4, 1, 8600, 6500, 8, 0, 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(17, '7702001017', 'BEB-COC-01', 'Coca-Cola Original 1.5L', 'Gaseosa refrescante botella no retornable', 4, 1, 6000, 4500, 10, 0, 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(18, '7702001018', 'BEB-AGU-01', 'Agua Manantial Cristal 600ml', 'Agua pura de manantial sin gas', 4, 1, 2000, 1200, 20, 0, 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(19, '7702001019', 'BEB-HIT-01', 'Jugo Hit Mora 500ml', 'Bebida con jugo natural de fruta en botella PET', 4, 1, 3000, 2200, 15, 0, 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(20, '7702001020', 'PAN-BIM-01', 'Pan Tajado Blanco Bimbo 450g', 'Pan familiar suave elaborado con harina fortificada', 5, 1, 7500, 5600, 8, 0, 'pan_bimbo.png', 'ACTIVO'),
-(21, '7702001021', 'PAN-GAL-01', 'Galletas Saltín Noel x 3 Tacos', 'Galletas de soda crujientes tradicionales', 5, 5, 6200, 4700, 10, 0, 'galletas_saltin.png', 'ACTIVO'),
+(20, '7702001020', 'PAN-BIM-01', 'Pan Tajado Blanco Bimbo 450g', 'Pan familiar suave elaborado con harina fortificada', 5, 1, 7500, 5600, 8, 0, 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(21, '7702001021', 'PAN-GAL-01', 'Galletas Saltín Noel x 3 Tacos', 'Galletas de soda crujientes tradicionales', 5, 5, 6200, 4700, 10, 0, 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(22, '7702001022', 'SNK-PAP-01', 'Papas Margarita Limón 110g', 'Papas naturales sabor a limón crocantes', 6, 1, 4500, 3300, 12, 0, 'papas_limon.png', 'ACTIVO'),
-(23, '7702001023', 'SNK-PLA-01', 'Platanitos Natuchips Maduros 85g', 'Hojuelas de plátano maduro crocantes', 6, 1, 3800, 2700, 12, 0, 'platanitos.png', 'ACTIVO'),
+(22, '7702001022', 'SNK-PAP-01', 'Papas Margarita Limón 110g', 'Papas naturales sabor a limón crocantes', 6, 1, 4500, 3300, 12, 0, 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(23, '7702001023', 'SNK-PLA-01', 'Platanitos Natuchips Maduros 85g', 'Hojuelas de plátano maduro crocantes', 6, 1, 3800, 2700, 12, 0, 'https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
 
-(24, '7702001024', 'ASO-REY-01', 'Jabón Rey Barra 300g', 'Jabón azul multiusos tradicional para lavar', 7, 1, 2800, 2000, 15, 0, 'jabon_rey.png', 'ACTIVO'),
-(25, '7702001025', 'ASO-FAB-01', 'Detergente Fab Polvo Flores 1kg', 'Detergente con fragancia floral limpieza profunda', 7, 1, 9800, 7500, 8, 0, 'detergente_fab.png', 'ACTIVO'),
-(26, '7702001026', 'ASO-AXI-01', 'Lavaplatos Axion Crema Limón 450g', 'Crema lavaplatos arranca grasa antibacterial', 7, 1, 5400, 4000, 10, 0, 'axion.png', 'ACTIVO');
+(24, '7702001024', 'ASO-REY-01', 'Jabón Rey Barra 300g', 'Jabón azul multiusos tradicional para lavar', 7, 1, 2800, 2000, 15, 0, 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(25, '7702001025', 'ASO-FAB-01', 'Detergente Fab Polvo Flores 1kg', 'Detergente con fragancia floral limpieza profunda', 7, 1, 9800, 7500, 8, 0, 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=300&auto=format&fit=crop&q=80', 'ACTIVO'),
+(26, '7702001026', 'ASO-AXI-01', 'Lavaplatos Axion Crema Limón 450g', 'Crema lavaplatos arranca grasa antibacterial', 7, 1, 5400, 4000, 10, 0, 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&auto=format&fit=crop&q=80', 'ACTIVO');
 
 -- 10. EXISTENCIAS INICIALES (BODEGA VS TIENDA)
 -- Ubicación 1 = Bodega Principal, Ubicación 2 = Tienda Principal

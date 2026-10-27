@@ -12,8 +12,8 @@
     <!-- Font Awesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Main Styles -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/pos.css">
+    <link rel="stylesheet" href="css/styles.css?v=3">
+    <link rel="stylesheet" href="css/pos.css?v=3">
 </head>
 <body class="theme-dark">
     <!-- PANTALLA DE INICIO DE SESIÓN SEGURA -->
@@ -102,19 +102,19 @@
             <nav class="sidebar-nav" id="sidebarNav">
                 <!-- SECCIÓN OPERACIÓN: ADMIN Y CAJERO -->
                 <div class="nav-section-wrapper" data-section="operacion" data-roles="ADMIN,CAJERO">
-                    <div class="nav-section-label">OPERACIÓN DIARIA</div>
+                    <div class="nav-section-label">OPERACIÓN</div>
                     <ul class="nav-list">
                         <li class="nav-item" data-module="pos" data-roles="ADMIN,CAJERO">
                             <a href="#pos" class="nav-link" data-module="pos" id="navPos">
                                 <span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span>
-                                <span class="nav-text">Punto de Venta (POS)</span>
+                                <span class="nav-text">Punto de Venta</span>
                                 <span class="nav-badge pulse" id="posCashStatusBadge">Caja</span>
                             </a>
                         </li>
                         <li class="nav-item" data-module="dashboard" data-roles="ADMIN">
                             <a href="#dashboard" class="nav-link" data-module="dashboard" id="navDashboard">
                                 <span class="nav-icon"><i class="fa-solid fa-chart-pie"></i></span>
-                                <span class="nav-text">Dashboard General</span>
+                                <span class="nav-text">Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-item" data-module="cash" data-roles="ADMIN,CAJERO">
@@ -129,25 +129,25 @@
 
                 <!-- SECCIÓN LOGÍSTICA: ADMIN Y BODEGUERO -->
                 <div class="nav-section-wrapper" data-section="logistica" data-roles="ADMIN,BODEGUERO">
-                    <div class="nav-section-label">LOGÍSTICA & CATÁLOGO</div>
+                    <div class="nav-section-label">INVENTARIO</div>
                     <ul class="nav-list">
                         <li class="nav-item" data-module="inventory" data-roles="ADMIN,BODEGUERO">
                             <a href="#inventory" class="nav-link" data-module="inventory" id="navInventory">
                                 <span class="nav-icon"><i class="fa-solid fa-warehouse"></i></span>
-                                <span class="nav-text">Inventarios & Traslados</span>
+                                <span class="nav-text">Inventarios</span>
                                 <span class="nav-alert-count" id="inventoryAlertCount" style="display:none;">0</span>
                             </a>
                         </li>
                         <li class="nav-item" data-module="purchases" data-roles="ADMIN,BODEGUERO">
                             <a href="#purchases" class="nav-link" data-module="purchases" id="navPurchases">
                                 <span class="nav-icon"><i class="fa-solid fa-cart-flatbed"></i></span>
-                                <span class="nav-text">Compras a Proveedor</span>
+                                <span class="nav-text">Compras</span>
                             </a>
                         </li>
                         <li class="nav-item" data-module="products" data-roles="ADMIN,BODEGUERO">
                             <a href="#products" class="nav-link" data-module="products" id="navProducts">
                                 <span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
-                                <span class="nav-text">Productos y Stock</span>
+                                <span class="nav-text">Productos</span>
                             </a>
                         </li>
                         <li class="nav-item" data-module="suppliers" data-roles="ADMIN">
@@ -161,12 +161,12 @@
 
                 <!-- SECCIÓN SISTEMA: SOLO ADMIN -->
                 <div class="nav-section-wrapper" data-section="sistema" data-roles="ADMIN">
-                    <div class="nav-section-label">SISTEMA & CONTROL</div>
+                    <div class="nav-section-label">SISTEMA</div>
                     <ul class="nav-list">
                         <li class="nav-item" data-module="employees" data-roles="ADMIN">
                             <a href="#employees" class="nav-link" data-module="employees" id="navEmployees">
                                 <span class="nav-icon"><i class="fa-solid fa-users-gear"></i></span>
-                                <span class="nav-text">Seguridad & Empleados</span>
+                                <span class="nav-text">Empleados</span>
                             </a>
                         </li>
                     </ul>
@@ -241,12 +241,12 @@
                             <div class="pos-search-bar">
                                 <div class="pos-input-group">
                                     <span class="search-icon"><i class="fa-solid fa-barcode"></i></span>
-                                    <input type="text" id="posBarcodeSearch" class="pos-search-input" placeholder="Escanear código de barras o escribir nombre del producto (F2)..." autocomplete="off" autofocus>
+                                    <input type="text" id="posBarcodeSearch" class="pos-search-input" placeholder="Buscar producto o escanear (F2)..." autocomplete="off" autofocus>
                                     <button class="btn-clear-search" id="btnClearPosSearch" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                                 <div class="pos-location-badge">
                                     <i class="fa-solid fa-shop"></i>
-                                    <span>Piso de Venta (Tienda)</span>
+                                    <span>Tienda</span>
                                 </div>
                             </div>
 
@@ -271,7 +271,7 @@
                             <div class="cart-header">
                                 <div class="cart-title-wrap">
                                     <i class="fa-solid fa-cart-shopping"></i>
-                                    <h3>Carrito de Venta</h3>
+                                    <h3>Carrito</h3>
                                 </div>
                                 <button class="btn-cart-clear" id="btnClearCart" title="Vaciar Carrito">
                                     <i class="fa-regular fa-trash-can"></i> Limpiar
@@ -282,7 +282,7 @@
                             <div class="cart-customer-selector">
                                 <div class="customer-info-box">
                                     <i class="fa-solid fa-user-tag"></i>
-                                    <input type="text" id="posCustomerName" class="customer-input" value="Consumidor Final" placeholder="Nombre de cliente">
+                                    <input type="text" id="posCustomerName" class="customer-input" value="Consumidor Final" placeholder="Cliente">
                                     <input type="text" id="posCustomerDoc" class="customer-doc-input" value="222222222222" placeholder="Cédula/NIT">
                                 </div>
                             </div>
@@ -291,8 +291,8 @@
                             <div class="cart-items-list" id="posCartItemsList">
                                 <div class="cart-empty-state">
                                     <i class="fa-solid fa-basket-shopping"></i>
-                                    <p>El carrito está vacío</p>
-                                    <small>Selecciona o escanea productos para agregar</small>
+                                    <p>Carrito vacío</p>
+                                    <small>Selecciona productos para cobrar</small>
                                 </div>
                             </div>
 
@@ -304,7 +304,7 @@
                                         <strong id="cartSubtotalText">$0</strong>
                                     </div>
                                     <div class="summary-line">
-                                        <span>IVA (0% víveres):</span>
+                                        <span>IVA:</span>
                                         <span id="cartIvaText">$0</span>
                                     </div>
                                     <div class="summary-line total-highlight">
@@ -315,7 +315,7 @@
 
                                 <div class="cart-actions-grid">
                                     <button class="btn btn-primary btn-checkout" id="btnOpenCheckoutModal" disabled>
-                                        <i class="fa-solid fa-money-bill-wave"></i> COBRAR (F9)
+                                        <i class="fa-solid fa-money-bill-wave"></i> Cobrar (F9)
                                     </button>
                                 </div>
                             </div>
@@ -382,8 +382,7 @@
                         <div class="dashboard-card card-chart">
                             <div class="card-header">
                                 <div>
-                                    <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> Ventas de los Últimos 7 Días</h3>
-                                    <span class="card-subtitle">Evolución de ingresos y facturación diaria</span>
+                                    <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> Ventas (7 Días)</h3>
                                 </div>
                                 <span class="chart-badge">Suma Diaria</span>
                             </div>
@@ -396,8 +395,7 @@
                         <div class="dashboard-card card-alerts">
                             <div class="card-header">
                                 <div>
-                                    <h3 class="card-title"><i class="fa-solid fa-bell"></i> Alertas en Tienda (Piso de Venta)</h3>
-                                    <span class="card-subtitle">Artículos agotándose en mostrador</span>
+                                    <h3 class="card-title"><i class="fa-solid fa-bell"></i> Alertas de Stock</h3>
                                 </div>
                                 <button class="btn btn-sm btn-outline" id="btnQuickTransferAll" title="Crear traslado desde Bodega">
                                     <i class="fa-solid fa-dolly"></i> Trasladar
@@ -413,10 +411,9 @@
                     <div class="dashboard-card card-movements">
                         <div class="card-header">
                             <div>
-                                <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Bitácora de Auditoría Reciente (POS_MOVIMIENTOS)</h3>
-                                <span class="card-subtitle">Historial de entradas por compra, traslados y salidas por venta</span>
+                                <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Movimientos Recientes</h3>
                             </div>
-                            <a href="#inventory" class="btn btn-sm btn-glass" data-module="inventory">Ver Bitácora Completa</a>
+                            <a href="#inventory" class="btn btn-sm btn-glass" data-module="inventory">Ver Todos</a>
                         </div>
                         <div class="table-responsive">
                             <table class="data-table">
@@ -497,13 +494,13 @@
                 <section class="module-view" id="view-inventory">
                     <div class="module-subnav">
                         <button class="subnav-btn active" data-tab="tab-stock-multilocation">
-                            <i class="fa-solid fa-layer-group"></i> Existencias Multi-Ubicación
+                            <i class="fa-solid fa-layer-group"></i> Existencias
                         </button>
                         <button class="subnav-btn" data-tab="tab-transfers">
-                            <i class="fa-solid fa-truck-ramp-box"></i> Traslados (Bodega &rarr; Tienda)
+                            <i class="fa-solid fa-truck-ramp-box"></i> Traslados
                         </button>
                         <button class="subnav-btn" data-tab="tab-movements-log">
-                            <i class="fa-solid fa-timeline"></i> Bitácora de Auditoría (POS_MOVIMIENTOS)
+                            <i class="fa-solid fa-timeline"></i> Movimientos
                         </button>
                     </div>
 
@@ -511,19 +508,19 @@
                     <div class="subview active" id="tab-stock-multilocation">
                         <div class="inventory-summary-cards">
                             <div class="inv-kpi">
-                                <span>Valor en Bodega (Costo)</span>
+                                <span>Bodega</span>
                                 <strong id="invValorBodega">$0</strong>
                             </div>
                             <div class="inv-kpi">
-                                <span>Valor en Tienda (Costo)</span>
+                                <span>Tienda</span>
                                 <strong id="invValorTienda">$0</strong>
                             </div>
                             <div class="inv-kpi">
-                                <span>Valor Global en Almacén</span>
+                                <span>Total Almacén</span>
                                 <strong id="invValorGlobal">$0</strong>
                             </div>
                             <button class="btn btn-primary" id="btnCreateTransferFromStock">
-                                <i class="fa-solid fa-arrow-right-arrow-left"></i> Nuevo Traslado de Mercancía
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i> Nuevo Traslado
                             </button>
                         </div>
 
@@ -705,10 +702,7 @@
                     </div>
 
                     <div class="module-header" style="margin-top: 1.5rem;">
-                        <div>
-                            <h3 class="section-title">Historial de Turnos y Arqueos de Caja</h3>
-                            <p class="section-subtitle">Consolidado de ventas en efectivo vs otros medios, fondos iniciales y diferencias.</p>
-                        </div>
+                        <h3 class="section-title">Historial de Turnos</h3>
                     </div>
 
                     <div class="table-card">
@@ -716,15 +710,15 @@
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Sesión #</th>
+                                        <th>#</th>
                                         <th>Caja</th>
                                         <th>Cajero</th>
                                         <th>Apertura</th>
                                         <th>Cierre</th>
-                                        <th>Monto Inicial</th>
-                                        <th>Ventas Efectivo</th>
-                                        <th>Esperado en Caja</th>
-                                        <th>Real Contado</th>
+                                        <th>Inicial</th>
+                                        <th>Efectivo</th>
+                                        <th>Esperado</th>
+                                        <th>Contado</th>
                                         <th>Diferencia</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
@@ -801,18 +795,18 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- SCRIPTS MODULARES -->
-    <script src="js/api.js"></script>
-    <script src="js/components/toast.js"></script>
-    <script src="js/components/modal.js"></script>
-    <script src="js/modules/dashboard.js"></script>
-    <script src="js/modules/pos.js"></script>
-    <script src="js/modules/products.js"></script>
-    <script src="js/modules/inventory.js"></script>
-    <script src="js/modules/purchases.js"></script>
-    <script src="js/modules/suppliers.js"></script>
-    <script src="js/modules/cash.js"></script>
-    <script src="js/modules/employees.js"></script>
-    <script src="js/modules/auth.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/components/toast.js?v=3"></script>
+    <script src="js/components/modal.js?v=3"></script>
+    <script src="js/modules/dashboard.js?v=3"></script>
+    <script src="js/modules/pos.js?v=3"></script>
+    <script src="js/modules/products.js?v=3"></script>
+    <script src="js/modules/inventory.js?v=3"></script>
+    <script src="js/modules/purchases.js?v=3"></script>
+    <script src="js/modules/suppliers.js?v=3"></script>
+    <script src="js/modules/cash.js?v=3"></script>
+    <script src="js/modules/employees.js?v=3"></script>
+    <script src="js/modules/auth.js?v=3"></script>
+    <script src="js/app.js?v=3"></script>
 </body>
 </html>

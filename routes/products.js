@@ -98,6 +98,7 @@ router.post('/', (req, res) => {
             costo_compra,
             stock_minimo,
             iva_porcentaje,
+            imagen_url,
             stock_inicial_bodega = 0,
             stock_inicial_tienda = 0
         } = req.body;
@@ -117,8 +118,8 @@ router.post('/', (req, res) => {
             INSERT INTO POS_PRODUCTOS (
                 codigo_barras, sku, nombre, descripcion,
                 categoria_id, unidad_id, precio_venta, costo_compra,
-                stock_minimo, iva_porcentaje, estado
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVO')
+                stock_minimo, iva_porcentaje, imagen_url, estado
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ACTIVO')
         `).run(
             codigo_barras,
             sku,
@@ -129,7 +130,8 @@ router.post('/', (req, res) => {
             Number(precio_venta),
             Number(costo_compra || 0),
             Number(stock_minimo || 5),
-            Number(iva_porcentaje || 0)
+            Number(iva_porcentaje || 0),
+            imagen_url || null
         );
 
         const newId = info.lastInsertRowid;
@@ -179,6 +181,7 @@ router.put('/:id', (req, res) => {
             costo_compra,
             stock_minimo,
             iva_porcentaje,
+            imagen_url,
             estado
         } = req.body;
 
@@ -194,19 +197,21 @@ router.put('/:id', (req, res) => {
                 costo_compra = ?,
                 stock_minimo = ?,
                 iva_porcentaje = ?,
+                imagen_url = ?,
                 estado = ?
             WHERE id = ?
         `).run(
             codigo_barras,
             sku,
             nombre,
-            descripcion,
-            categoria_id,
-            unidad_id,
+            descripcion || '',
+            Number(categoria_id),
+            Number(unidad_id),
             Number(precio_venta),
-            Number(costo_compra),
-            Number(stock_minimo),
+            Number(costo_compra || 0),
+            Number(stock_minimo || 5),
             Number(iva_porcentaje || 0),
+            imagen_url || null,
             estado || 'ACTIVO',
             id
         );

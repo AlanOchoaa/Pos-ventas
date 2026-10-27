@@ -79,14 +79,14 @@ const cashModule = {
             } else {
                 this.currentSession = null;
                 card.innerHTML = `
-                    <div style="text-align: center; padding: 2.5rem 1rem;">
-                        <i class="fa-solid fa-cash-register" style="font-size: 3rem; color: var(--text-muted); opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
-                        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; margin-bottom: 0.4rem;">No hay ningún turno de caja abierto en este momento</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 500px; margin: 0 auto 1.5rem auto;">
-                            Para operar el Punto de Venta (POS) y cobrar a clientes, debes realizar la <b>Apertura de Turno</b> registrando el fondo inicial de sencillo.
+                    <div style="text-align: center; padding: 2rem 1rem;">
+                        <i class="fa-solid fa-cash-register" style="font-size: 2.5rem; color: var(--text-muted); opacity: 0.35; margin-bottom: 0.75rem; display: block;"></i>
+                        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 0.3rem;">No hay turno de caja abierto</h3>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 auto 1.25rem auto;">
+                            Abre un turno para registrar ventas en el POS.
                         </p>
                         <button class="btn btn-primary" onclick="cashModule.openCashModal()">
-                            <i class="fa-solid fa-lock-open"></i> Abrir Turno de Caja (POS_ABRIR_CAJA)
+                            <i class="fa-solid fa-lock-open"></i> Abrir Turno de Caja
                         </button>
                     </div>
                 `;
@@ -167,7 +167,7 @@ const cashModule = {
 
     openCashModal() {
         modal.open({
-            title: '🔓 Apertura de Turno de Caja (POS_ABRIR_CAJA)',
+            title: '🔓 Apertura de Turno de Caja',
             maxWidth: '520px',
             content: `
                 <form id="formOpenCash" onsubmit="event.preventDefault(); cashModule.confirmOpenCash();">
@@ -243,7 +243,7 @@ const cashModule = {
         const esperado = s.monto_cierre_esperado || (s.monto_apertura + s.monto_ventas_efectivo);
 
         modal.open({
-            title: `🔒 Cierre de Turno y Arqueo (POS_CERRAR_CAJA)`,
+            title: `🔒 Cierre y Arqueo de Caja`,
             maxWidth: '560px',
             content: `
                 <form id="formCloseCash" onsubmit="event.preventDefault(); cashModule.confirmCloseCash();">

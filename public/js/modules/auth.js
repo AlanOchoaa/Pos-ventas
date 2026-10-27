@@ -208,7 +208,7 @@ const authModule = {
 
         if (nameEl) nameEl.textContent = user.nombre_completo;
         if (roleEl) roleEl.textContent = user.rol_codigo;
-        if (hintEl) hintEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${user.description || ''}`;
+        if (hintEl) hintEl.innerHTML = '';
         if (footerLabel) footerLabel.textContent = `Rol: ${user.rol_codigo}`;
 
         // Estilos del avatar según rol

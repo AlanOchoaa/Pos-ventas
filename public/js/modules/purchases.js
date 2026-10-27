@@ -191,7 +191,7 @@ const purchasesModule = {
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <input type="checkbox" id="buyImmediateConfirm" checked style="width: 18px; height: 18px; cursor: pointer;">
                             <label for="buyImmediateConfirm" style="font-size: 0.82rem; font-weight: 600; cursor: pointer;">
-                                Confirmar inmediatamente e ingresar stock a Bodega (POS_CONFIRMAR_COMPRA)
+                                Confirmar e ingresar stock a Bodega
                             </label>
                         </div>
                         <div style="text-align: right;">
