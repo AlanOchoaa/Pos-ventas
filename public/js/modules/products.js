@@ -91,42 +91,50 @@ const productsModule = {
         }
     },
 
+    _fmt(val) {
+        if (typeof window.formatCurrency === 'function') return window.formatCurrency(val);
+        return '$\u00a0' + Number(val || 0).toLocaleString('es-CO');
+    },
+
     renderTable(products) {
         const tbody = document.getElementById('productsTableBody');
         if (!tbody) return;
 
         if (!products || products.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" class="text-center" style="padding: 2rem; color: var(--text-muted);">No se encontraron productos registrados.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="11" class="text-center" style="padding: 2rem; color: var(--text-muted);">No se encontraron productos registrados.</td></tr>`;
             return;
         }
 
-        tbody.innerHTML = products.map(p => {
-            const stockTienda = p.stock_tienda || 0;
-            const stockBodega = p.stock_bodega || 0;
-            const stockTotal = stockBodega + stockTienda;
+        const catEmojis = {
+            'Granos y Abarrotes': '🌾', 'Lácteos y Huevos': '🥛',
+            'Enlatados y Conservas': '🥫', 'Bebidas': '🥤',
+            'Panadería y Snacks': '🍞', 'Aseo del Hogar': '🧴'
+        };
 
-            let estadoPill = '<span class="badge badge-success">Óptimo</span>';
-            if (stockTienda <= 0) {
-                estadoPill = '<span class="badge badge-danger">Agotado en Tienda</span>';
-            } else if (stockTienda <= p.stock_minimo) {
-                estadoPill = `<span class="badge badge-warning">Stock Bajo (&le; ${p.stock_minimo})</span>`;
-            }
+        try {
+            tbody.innerHTML = products.map(p => {
+                const stockTienda = p.stock_tienda || 0;
+                const stockBodega = p.stock_bodega || 0;
+                const stockTotal = stockBodega + stockTienda;
 
-            // Miniatura del producto
-            const catEmojis = {
-                'Granos y Abarrotes': '🌾', 'Lácteos y Huevos': '🥛',
-                'Enlatados y Conservas': '🥫', 'Bebidas': '🥤',
-                'Panadería y Snacks': '🍞', 'Aseo del Hogar': '🧴'
-            };
-            const imgSrc = p.imagen_url
-                ? (p.imagen_url.startsWith('http://') || p.imagen_url.startsWith('https://') ? p.imagen_url : `img/${p.imagen_url}`)
-                : null;
-            const thumbnail = imgSrc
-                ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                   <div class="prod-thumb-fallback" style="display:none;">${fallbackEmoji}</div>`
-                : `<div class="prod-thumb-fallback">${fallbackEmoji}</div>`;
+                let estadoPill = '<span class="badge badge-success">Óptimo</span>';
+                if (stockTienda <= 0) {
+                    estadoPill = '<span class="badge badge-danger">Agotado</span>';
+                } else if (stockTienda <= p.stock_minimo) {
+                    estadoPill = `<span class="badge badge-warning">Stock Bajo</span>`;
+                }
 
-            return `
+                // Miniatura del producto
+                const fallbackEmoji = catEmojis[p.categoria_nombre] || '📦';
+                const imgSrc = p.imagen_url
+                    ? (p.imagen_url.startsWith('http://') || p.imagen_url.startsWith('https://') ? p.imagen_url : `img/${p.imagen_url}`)
+                    : null;
+                const thumbnail = imgSrc
+                    ? `<img src="${imgSrc}" alt="${p.nombre}" class="prod-thumb" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div class="prod-thumb-fallback" style="display:none;">${fallbackEmoji}</div>`
+                    : `<div class="prod-thumb-fallback">${fallbackEmoji}</div>`;
+
+                return `
                 <tr>
                     <td>
                         <div class="prod-thumb-wrap">${thumbnail}</div>
@@ -140,8 +148,8 @@ const productsModule = {
                         <small style="color: var(--text-muted);">${p.descripcion || ''}</small>
                     </td>
                     <td><span class="badge badge-info">${p.categoria_nombre}</span></td>
-                    <td><strong>${formatCurrency(p.precio_venta)}</strong></td>
-                    <td>${formatCurrency(p.costo_compra)}</td>
+                    <td><strong>${this._fmt(p.precio_venta)}</strong></td>
+                    <td>${this._fmt(p.costo_compra)}</td>
                     <td><b>${stockBodega}</b> ${p.unidad_abrev}</td>
                     <td><b style="color: ${stockTienda <= p.stock_minimo ? 'var(--accent-amber)' : 'inherit'};">${stockTienda}</b> ${p.unidad_abrev}</td>
                     <td><strong>${stockTotal}</strong> ${p.unidad_abrev}</td>
@@ -158,7 +166,11 @@ const productsModule = {
                     </td>
                 </tr>
             `;
-        }).join('');
+            }).join('');
+        } catch (err) {
+            console.error('Error en renderTable:', err);
+            tbody.innerHTML = `<tr><td colspan="11" class="text-center" style="color:red;">Error al renderizar productos: ${err.message}</td></tr>`;
+        }
     },
 
     openNewProductModal() {

@@ -120,22 +120,16 @@ const posModule = {
             const container = document.getElementById('posCategoriesTabs');
             if (!container) return;
 
-            let html = `
-                <button class="pos-cat-tab ${this.activeCategory === 'all' ? 'active' : ''}" data-cat="all">
+            container.innerHTML = `
+                <button class="pos-cat-tab active" data-cat="all">
                     <i class="fa-solid fa-border-all"></i> Todos
                 </button>
-            `;
-
-            data.categorias.forEach(cat => {
-                const icon = cat.icono || 'fas fa-box';
-                html += `
-                    <button class="pos-cat-tab ${this.activeCategory == cat.id ? 'active' : ''}" data-cat="${cat.id}">
-                        <i class="${icon}"></i> ${cat.nombre}
+                ${data.categorias.map(c => `
+                    <button class="pos-cat-tab" data-cat="${c.id}">
+                        ${c.nombre}
                     </button>
-                `;
-            });
-
-            container.innerHTML = html;
+                `).join('')}
+            `;
 
             container.querySelectorAll('.pos-cat-tab').forEach(tab => {
                 tab.addEventListener('click', (e) => {
@@ -166,6 +160,10 @@ const posModule = {
     renderProductsGrid() {
         const grid = document.getElementById('posProductsGrid');
         if (!grid) return;
+
+        // FORZAR altura de fila fija directamente en el elemento del grid
+        grid.style.gridAutoRows = '300px';
+        grid.style.alignContent = 'start';
 
         let filtered = this.products;
 
@@ -202,6 +200,11 @@ const posModule = {
             'Bebidas y Refrescos': '🥤', 'Granos y Despensa': '🌾'
         };
 
+        // Altura fija para TODAS las tarjetas igual
+        const CARD_H   = '300px';
+        const IMG_H    = '155px';
+        const TITLE_H  = '2.2em';
+
         grid.innerHTML = filtered.map(p => {
             const stock = p.stock_tienda || 0;
             const isAgotado = stock <= 0;
@@ -220,18 +223,26 @@ const posModule = {
                 : null;
 
             return `
-                <div class="pos-prod-card ${isAgotado ? 'agotado' : ''}" onclick="posModule.addToCart(${p.id})">
-                    <div class="pos-prod-img-wrap">
+                <div class="pos-prod-card ${isAgotado ? 'agotado' : ''}"
+                     onclick="posModule.addToCart(${p.id})"
+                     style="height:${CARD_H}; min-height:${CARD_H}; max-height:${CARD_H}; box-sizing:border-box;">
+                    <div class="pos-prod-img-wrap"
+                         style="height:${IMG_H}; min-height:${IMG_H}; flex-shrink:0;">
                         ${badgeHtml}
                         ${imgSrc
-                            ? `<img src="${imgSrc}" alt="${p.nombre}" class="pos-prod-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                            ? `<img src="${imgSrc}" alt="${p.nombre}" class="pos-prod-img" loading="lazy"
+                                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                <div class="pos-prod-img-fallback" style="display:none;">${fallbackEmoji}</div>`
                             : `<div class="pos-prod-img-fallback">${fallbackEmoji}</div>`
                         }
                     </div>
-                    <div class="pos-prod-info">
+                    <div class="pos-prod-info" style="flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
                         <span class="prod-category-tag">${p.categoria_nombre}</span>
-                        <h4 class="prod-title">${p.nombre}</h4>
+                        <h4 class="prod-title"
+                            style="height:${TITLE_H}; min-height:${TITLE_H}; overflow:hidden;
+                                   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+                            ${p.nombre}
+                        </h4>
                         <div class="prod-footer">
                             <span class="prod-price">${formatCurrency(p.precio_venta)}</span>
                             <span class="prod-unit">${p.unidad_abrev || p.unidad_nombre}</span>
