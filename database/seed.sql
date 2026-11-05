@@ -41,10 +41,10 @@ INSERT OR IGNORE INTO POS_ROL_PERMISOS (rol_id, permiso_id) VALUES
 
 -- 3. EMPLEADOS (Usuarios con login: admin, cajero, bodeguero)
 INSERT OR IGNORE INTO POS_EMPLEADOS (id, codigo, usuario, cedula, nombre, apellido, telefono, email, rol_id, pin, estado) VALUES
-(1, 'EMP-001', 'admin', '1010202030', 'Carlos', 'Mendoza (Admin)', '3001234567', 'admin@tiendaviveres.com', 1, '1234', 'ACTIVO'),
-(2, 'EMP-002', 'cajero', '1020304050', 'Laura', 'Gómez (Cajera)', '3109876543', 'laura.cajera@tiendaviveres.com', 3, '1234', 'ACTIVO'),
-(3, 'EMP-003', 'bodeguero', '1030405060', 'Pedro', 'Rojas (Bodeguero)', '3157778899', 'pedro.bodega@tiendaviveres.com', 4, '1234', 'ACTIVO'),
-(4, 'EMP-004', 'supervisor', '1040506070', 'Andrés', 'Castro (Supervisor)', '3204445566', 'andres.super@tiendaviveres.com', 2, '1234', 'ACTIVO');
+(1, 'EMP-001', 'admin', '1010202030', 'Alan', 'Ochoa', '3001234567', 'alan.ochoa@tiendaviveres.com', 1, '1234', 'ACTIVO'),
+(2, 'EMP-002', 'cajero', '1020304050', 'Luis', 'Tapias', '3109876543', 'luis.tapias@tiendaviveres.com', 3, '1234', 'ACTIVO'),
+(3, 'EMP-003', 'bodeguero', '1030405060', 'Daniel', 'Muñoz', '3157778899', 'daniel.munoz@tiendaviveres.com', 4, '1234', 'ACTIVO'),
+(4, 'EMP-004', 'supervisor', '1040506070', 'Jhon', 'Suarez', '3204445566', 'jhon.suarez@tiendaviveres.com', 2, '1234', 'ACTIVO');
 
 -- 4. UBICACIONES
 INSERT OR IGNORE INTO POS_UBICACIONES (id, codigo, nombre, tipo, descripcion, estado) VALUES

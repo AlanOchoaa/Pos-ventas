@@ -123,7 +123,7 @@ router.get('/demo-users', (req, res) => {
             {
                 usuario: 'admin',
                 pin: '1234',
-                nombre: 'Carlos Mendoza',
+                nombre: 'Alan Ochoa',
                 rol_codigo: 'ADMIN',
                 rol_nombre: 'Administrador General',
                 badge: 'Acceso Total a Todo el Sistema',
@@ -134,7 +134,7 @@ router.get('/demo-users', (req, res) => {
             {
                 usuario: 'cajero',
                 pin: '1234',
-                nombre: 'Laura Gómez',
+                nombre: 'Luis Tapias',
                 rol_codigo: 'CAJERO',
                 rol_nombre: 'Cajero de Tienda',
                 badge: 'Solo POS & Caja',
@@ -145,7 +145,7 @@ router.get('/demo-users', (req, res) => {
             {
                 usuario: 'bodeguero',
                 pin: '1234',
-                nombre: 'Pedro Rojas',
+                nombre: 'Daniel Muñoz',
                 rol_codigo: 'BODEGUERO',
                 rol_nombre: 'Encargado de Bodega',
                 badge: 'Solo Inventarios & Compras',

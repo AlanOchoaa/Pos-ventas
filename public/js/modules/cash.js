@@ -182,7 +182,7 @@ const cashModule = {
 
                     <div class="form-group">
                         <label class="form-label">Cajero(a) Responsable:</label>
-                        <input type="text" class="form-input" value="${window.appState ? window.appState.currentUser.name : 'Laura Gómez (Cajera)'}" disabled>
+                        <input type="text" class="form-input" value="${window.appState ? window.appState.currentUser.name : 'Luis Tapias (Cajero)'}" disabled>
                     </div>
 
                     <div class="form-group">
