@@ -17,6 +17,21 @@ const authModule = {
         if (saved) {
             try {
                 const user = JSON.parse(saved);
+
+                // Sincronizar nombres actualizados del sistema
+                const currentNames = {
+                    'admin': 'Alan Ochoa',
+                    'cajero': 'Luis Tapias',
+                    'bodeguero': 'Daniel Muñoz',
+                    'supervisor': 'Jhon Suarez'
+                };
+                if (currentNames[user.usuario]) {
+                    user.nombre_completo = currentNames[user.usuario];
+                    user.nombre = currentNames[user.usuario].split(' ')[0];
+                    user.apellido = currentNames[user.usuario].split(' ').slice(1).join(' ');
+                    localStorage.setItem('pos_active_session', JSON.stringify(user));
+                }
+
                 this.currentUser = user;
                 window.appState.currentUser = user;
 
