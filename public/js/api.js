@@ -75,7 +75,17 @@ function formatCurrency(amount) {
 // Formateador de fecha y hora local
 function formatDateTime(dateStr) {
     if (!dateStr) return '--';
-    const date = new Date(dateStr);
+    let parsedStr = dateStr;
+    if (typeof dateStr === 'string') {
+        // SQLite almacena fechas en UTC sin 'Z' ('YYYY-MM-DD HH:mm:ss')
+        // Al agregar 'Z', JavaScript lo convierte correctamente a la hora local del usuario
+        if (/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/.test(dateStr)) {
+            parsedStr = dateStr.replace(' ', 'T') + 'Z';
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+            parsedStr = dateStr + 'T00:00:00';
+        }
+    }
+    const date = new Date(parsedStr);
     if (isNaN(date.getTime())) return dateStr;
     return date.toLocaleString('es-CO', {
         year: 'numeric',

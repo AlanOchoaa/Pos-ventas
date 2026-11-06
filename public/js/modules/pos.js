@@ -98,7 +98,7 @@ const posModule = {
                 this.activeCashSession = null;
                 if (chip) {
                     chip.className = 'quick-status-chip chip-closed';
-                    text.innerHTML = `<i class="fa-solid fa-lock"></i> Caja Cerrada (Abrir Turno)`;
+                    text.innerHTML = `<i class="fa-solid fa-lock"></i> Caja Cerrada`;
                 }
                 if (navBadge) navBadge.textContent = 'Cerrada';
                 if (navPill) {
