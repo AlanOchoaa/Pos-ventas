@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+    // 0. Inicializar tema claro / oscuro guardado
+    initTheme();
+
     // 1. Iniciar reloj en tiempo real
     startLiveClock();
 
@@ -185,3 +188,43 @@ function setupMobileSidebar() {
         });
     }
 }
+
+// ====================================================================
+// CONTROLADOR DE TEMA (CLARO / OSCURO)
+// ====================================================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('pos_theme') || 'dark';
+    applyTheme(savedTheme);
+}
+
+function applyTheme(theme) {
+    const body = document.body;
+    const icon = document.getElementById('themeToggleIcon');
+    const text = document.getElementById('themeToggleText');
+
+    if (theme === 'light') {
+        body.classList.remove('theme-dark');
+        body.classList.add('theme-light');
+        if (icon) icon.className = 'fa-solid fa-moon';
+        if (text) text.textContent = 'Modo Oscuro';
+    } else {
+        body.classList.remove('theme-light');
+        body.classList.add('theme-dark');
+        if (icon) icon.className = 'fa-solid fa-sun';
+        if (text) text.textContent = 'Modo Claro';
+    }
+
+    localStorage.setItem('pos_theme', theme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.body.classList.contains('theme-light') ? 'light' : 'dark';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme(newTheme);
+    if (typeof playTone === 'function') playTone('beep');
+    if (typeof showToast === 'function') {
+        showToast(newTheme === 'light' ? '☀️ Modo Claro activado' : '🌙 Modo Oscuro activado', 'info');
+    }
+}
+
+window.toggleTheme = toggleTheme;

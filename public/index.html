@@ -14,8 +14,8 @@
     <!-- Font Awesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Main Styles -->
-    <link rel="stylesheet" href="css/styles.css?v=3">
-    <link rel="stylesheet" href="css/pos.css?v=7">
+    <link rel="stylesheet" href="css/styles.css?v=6">
+    <link rel="stylesheet" href="css/pos.css?v=8">
 </head>
 <body class="theme-dark">
     <!-- PANTALLA DE INICIO DE SESIÓN SEGURA -->
@@ -208,6 +208,12 @@
                         <i class="fa-solid fa-circle-dot"></i>
                         <span id="topbarCashText">Verificando estado de caja...</span>
                     </div>
+
+                    <!-- BOTÓN CAMBIAR TEMA CLARO / OSCURO -->
+                    <button class="btn-theme-toggle" id="btnThemeToggle" onclick="toggleTheme()" title="Cambiar tema claro / oscuro">
+                        <i class="fa-solid fa-sun" id="themeToggleIcon"></i>
+                        <span id="themeToggleText">Modo Claro</span>
+                    </button>
                 </div>
 
                 <div class="topbar-right">
@@ -809,6 +815,6 @@
     <script src="js/modules/cash.js?v=3"></script>
     <script src="js/modules/employees.js?v=3"></script>
     <script src="js/modules/auth.js?v=4"></script>
-    <script src="js/app.js?v=3"></script>
+    <script src="js/app.js?v=4"></script>
 </body>
 </html>
