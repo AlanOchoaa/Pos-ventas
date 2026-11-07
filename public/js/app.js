@@ -170,22 +170,38 @@ function startLiveClock() {
     setInterval(update, 1000);
 }
 
-// Menú móvil
+// Colapso y expansión del menú lateral (Sidebar)
 function setupMobileSidebar() {
     const toggleBtn = document.getElementById('btnToggleSidebar');
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const sidebar = document.getElementById('sidebar');
 
-    if (mobileBtn && sidebar) {
-        mobileBtn.addEventListener('click', () => {
+    function toggleSidebar() {
+        if (!sidebar) return;
+        if (window.innerWidth <= 768) {
             sidebar.classList.toggle('open');
-        });
+        } else {
+            sidebar.classList.toggle('collapsed');
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('pos_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+        }
+        if (typeof playTone === 'function') playTone('beep');
     }
 
-    if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleSidebar);
+    }
+
+    // Restaurar estado guardado en pantallas de escritorio
+    if (window.innerWidth > 768 && sidebar) {
+        const savedCollapsed = localStorage.getItem('pos_sidebar_collapsed');
+        if (savedCollapsed === 'true') {
+            sidebar.classList.add('collapsed');
+        }
     }
 }
 
